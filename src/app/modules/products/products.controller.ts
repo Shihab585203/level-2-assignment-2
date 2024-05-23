@@ -23,22 +23,40 @@ const addProducts = async (req: Request, res: Response) => {
   }
 };
 
-//Controller controls to get all products
-const getAllProducts = async (req: Request, res: Response) => {
+//get All products and Search data
+
+const getAllAndSearchProducts = async (req: Request, res: Response) => {
+  const { searchTerm } = req.query as { searchTerm?: string };
+
   try {
-    const result = await productServices.getAllProductsFromDB();
-    res.status(200).json({
-      success: true,
-      message: 'Products fetched successfully!',
-      data: result,
-    });
+    if (searchTerm) {
+      //Get Searched Data
+      const SearchResult =
+        await productServices.getAllProductsAndSearchFromDB(searchTerm);
+      res.status(200).json({
+        success: true,
+        message: `Products matching search term ${searchTerm} fetched successfully!`,
+        data: SearchResult,
+      });
+    } else {
+      // Fetch all products
+      const getAllResult =
+        await productServices.getAllProductsAndSearchFromDB();
+      res.status(200).json({
+        success: true,
+        message: 'Products fetched successfully!',
+        data: getAllResult,
+      });
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Something Went Wrong!',
+      message: 'Something went wrong!',
+      error: error,
     });
   }
 };
+
 
 //Controller controls to get a single product
 
@@ -62,74 +80,54 @@ const getSingleProduct = async (req: Request, res: Response) => {
 
 //update
 const updateProduct = async (req: Request, res: Response) => {
-    const  { productId }  = req.params;
-    const updateData = req.body;
-    
-    try {
+  const { productId } = req.params;
+  const updateData = req.body;
 
-      const result = await productServices.updateProductFromDB(productId, updateData);
-  
-      res.status(200).json({
-        success: true,
-        message: 'Product updated successfully!',
-        data: result,
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Something Went Wrong!',
-      });
-    }
-  };
+  try {
+    const result = await productServices.updateProductFromDB(
+      productId,
+      updateData,
+    );
 
-  //delete data
+    res.status(200).json({
+      success: true,
+      message: 'Product updated successfully!',
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Something Went Wrong!',
+    });
+  }
+};
 
-  const deleteProduct = async (req: Request, res: Response) => {
-    try {
-      const { productId } = req.params;
-      
-      const result = await productServices.deleteProductFromDB(productId);
-  
-      res.status(200).json({
-        success: true,
-        message: 'Product deleted successfully!',
-        data:  null,
-      });
-    } catch (err) {
-      res.status(500).json({
-        success: false,
-        message: 'Something went wrong',
-        error: err,
-      });
-    }
-  };
+//delete data
 
-  //search data
+const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
 
-  const searchProduct = async (req: Request, res: Response) => {
-    const { searchTerm } = req.query as {searchTerm: string};
-    try {
-        const result = await productServices.searchProductFromDB(searchTerm);
+    const result = await productServices.deleteProductFromDB(productId);
 
-        res.status(200).json({
-            success: true,
-            message: 'Products matching search term phone fetched successfully!!',
-            data:  result,
-          });
-        } catch (err) {
-          res.status(500).json({
-            success: false,
-            message: 'Something went wrong',
-            error: err,
-          });
-        }
-    }
+    res.status(200).json({
+      success: true,
+      message: 'Product deleted successfully!',
+      data: null,
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong',
+      error: err,
+    });
+  }
+};
 
 export const productController = {
   addProducts,
-  getAllProducts,
   getSingleProduct,
   updateProduct,
   deleteProduct,
-  searchProduct
+  getAllAndSearchProducts,
 };
