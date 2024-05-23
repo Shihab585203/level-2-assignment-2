@@ -1,9 +1,16 @@
-import { Products } from '../products/products.interface';
+import { productModel } from '../products/products.model';
+import { Orders } from './orders.interface';
 import { orderModel } from './orders.model';
 
 //create new order service
-const createNewOrderIntoDB = async (products: Products) => {
-  const result = await orderModel.create(products);
+const createNewOrderIntoDB = async (order: Orders) => {
+  const existProducts = await productModel.findById(order.productId);
+  
+  if(!existProducts){
+    throw new Error("Product not found")
+  }
+
+  const result = await orderModel.create(order);
   return result;
 };
 
@@ -24,10 +31,8 @@ const getAllOrdersAndSearchQuery = async (query?: string) => {
   }
 };
 
-// const getAllOrdersFromDB = async () => {};
 
 export const orderServices = {
   createNewOrderIntoDB,
-  //getAllOrdersFromDB,
   getAllOrdersAndSearchQuery,
 };

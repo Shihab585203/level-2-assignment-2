@@ -62,7 +62,6 @@ const getAllAndSearchProducts = async (req: Request, res: Response) => {
   }
 };
 
-
 //Controller controls to get a single product
 
 const getSingleProduct = async (req: Request, res: Response) => {
@@ -113,7 +112,7 @@ const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
 
-    const result = await productServices.deleteProductFromDB(productId);
+    await productServices.deleteProductFromDB(productId);
 
     res.status(200).json({
       success: true,
