@@ -22,6 +22,54 @@ const createOrder = async (req: Request, res: Response) => {
     }
 }
 
+//Controller control to get all orders
+
+const allOrdersNSearchController = async( req: Request, res: Response) => {
+    const { email } = req.query as { email?: string}
+
+    try{
+        if(email){
+            //Controller of get searched data by email query
+            const searchResult = await orderServices.getAllOrdersAndSearchQuery(email);
+
+            res.status(200).json({
+                success: true,
+                message: "Orders fetched successfully for user email!",
+                data: searchResult
+            })
+        } else {
+            //controller of get All data
+            const result = await orderServices.getAllOrdersAndSearchQuery();
+        
+        res.status(200).json({
+            success: true,
+            message: "Orders fetched successfully!",
+            data: result
+        })
+        }
+    } catch( error ){
+        res.status(500).json({
+            success: false,
+            message: "Something Went Wrong!",
+            error: error
+        })
+    }
+}
+
+
+// const getAllOrders = async (req: Request, res: Response) => {
+//     try {
+        
+//     } catch( error ){
+//         res.status(500).json({
+//             success: false,
+//             message: "Something Went Wrong!",
+//             error: error
+//         })
+//     }
+// }
+
 export const ordersController = {
-    createOrder
+    createOrder,
+    allOrdersNSearchController
 }
