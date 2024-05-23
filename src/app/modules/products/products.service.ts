@@ -1,7 +1,8 @@
-// import { Types } from 'mongoose';
 import { Products } from './products.interface';
 import { productModel } from './products.model';
 
+
+//Post a Product
 const addProductsIntoDB = async (products: Products) => {
   const result = await productModel.create(products);
   return result;

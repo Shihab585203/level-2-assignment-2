@@ -29,28 +29,9 @@ const productsSchema = new Schema<Products>({
   tags: { type: [String], required: true },
   variants: { type: [variantSchema], required: true },
   inventory: { type: inventorySchema, required: true },
-//   isDeleted: { type: Boolean, default: false }
 });
 
-//Delete query middleware
 
-// productsSchema.pre('find', function(next){
-//     this.find({ isDeleted: {$ne: true }})
-//     next();
-// })
-
-// productsSchema.pre('findOne', function(next){
-//     this.find({ isDeleted: {$ne: true} })
-//     next();
-// })
-
-// productsSchema.pre('aggregate', function(next){
-//     this.pipeline().unshift({ $match: { isDeleted: { $ne: true} } })
-//     next();
-// })
-
-
-
-//Model Data
+//Products Model Data
 
 export const productModel = model<Products>('Products', productsSchema);
