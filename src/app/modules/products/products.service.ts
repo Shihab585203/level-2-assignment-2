@@ -21,7 +21,7 @@ const getSingleProductFromDB = async (id: string) => {
 
 //Update a Data by PUT method
 const updateProductFromDB = async (id: string, updateData: object) => {
-  const result = await productModel.findOneAndUpdate({ _id :id }, updateData, {
+  const result = await productModel.findOneAndUpdate({ _id: id }, updateData, {
     new: true,
   });
 
@@ -34,10 +34,30 @@ const deleteProductFromDB = async (id: string) => {
   return result;
 };
 
+//Search Product Query
+
+const searchProductFromDB = async (query: string) => {
+  const trimmedQuery = query.trim();
+  const $regex = new RegExp(trimmedQuery, 'i');
+
+  const result = await productModel.find({
+    $or: [
+      {
+        name: { $regex },
+        description: { $regex },
+        category: { $regex },
+      },
+    ],
+  });
+
+  return result;
+};
+
 export const productServices = {
   addProductsIntoDB,
   getAllProductsFromDB,
   getSingleProductFromDB,
   updateProductFromDB,
   deleteProductFromDB,
+  searchProductFromDB,
 };

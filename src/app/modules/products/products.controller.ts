@@ -5,7 +5,7 @@ const addProducts = async (req: Request, res: Response) => {
   try {
     const products = req.body;
 
-    //Controller will call service for send to data
+    //Controller will call service for post a data
     const result = await productServices.addProductsIntoDB(products);
 
     //Send Response
@@ -104,10 +104,32 @@ const updateProduct = async (req: Request, res: Response) => {
     }
   };
 
+  //search data
+
+  const searchProduct = async (req: Request, res: Response) => {
+    const { searchTerm } = req.query as {searchTerm: string};
+    try {
+        const result = await productServices.searchProductFromDB(searchTerm);
+
+        res.status(200).json({
+            success: true,
+            message: 'Products matching search term phone fetched successfully!!',
+            data:  result,
+          });
+        } catch (err) {
+          res.status(500).json({
+            success: false,
+            message: 'Something went wrong',
+            error: err,
+          });
+        }
+    }
+
 export const productController = {
   addProducts,
   getAllProducts,
   getSingleProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  searchProduct
 };
